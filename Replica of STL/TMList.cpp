@@ -13,7 +13,7 @@ public:
 virtual void add(int data,bool *success)=0;
 virtual void insert(int index,int data,bool *success)=0;
 virtual int removeAt(int index,int *success)=0;
-virtual int get(int index,int *success)=0;
+virtual int get(int index,int *success) const=0;
 virtual void update(int index,int *success)=0;
 virtual void removeAll()=0;
 virtual void clear()=0;
@@ -33,7 +33,7 @@ TMArrayList(const TMArrayList &other);
 void add(int data,bool *success);
 void insert(int index,int data,bool *success);
 int removeAt(int index,int *success);
-int get(int index,int *success);
+int get(int index,int *success) const;
 void update(int index,int *success);
 void removeAll();
 void clear();
@@ -92,7 +92,17 @@ TMArrayList::TMArrayList(const TMArrayList &other)
 }
 void TMArrayList::add(int data,bool *success)
 {
-
+if(success) *success=false;
+if(this->size==this->capacity)
+{
+if(!addRow()) return;
+}
+int rowIndex,columnIndex;
+rowIndex=this->size/10;
+columnIndex=this->size%10;
+this->ptr[rowIndex][columnIndex]=data;
+this->size++;
+if(success) *success=true;
 }
 void TMArrayList::insert(int index,int data,bool *success)
 {
@@ -101,9 +111,14 @@ int TMArrayList::removeAt(int index,int *success)
 {
 return 0;
 }
-int TMArrayList::get(int index,int *success)
+int TMArrayList::get(int index,int *success) const
 {
-return 0;
+if(success) *success=false;
+if(index<0 || index>=this->size) return 0;
+int rowIndex=index/10;
+int columnIndex=index%10;
+if(success) *success=true;
+return ptr[rowIndex][columnIndex];
 }
 void TMArrayList::update(int index,int *success)
 {
@@ -116,5 +131,5 @@ void TMArrayList::clear()
 }
 int TMArrayList::getSize()
 {
-return 0;
+return this->size;
 }
