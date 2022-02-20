@@ -41,16 +41,50 @@ int getSize();
 };
 bool TMArrayList::addRow()
 {
-
-
-return 0; //Just Compiling
+if(capacity%100==0)
+{
+int numberOfPointers;
+numberOfPointers=this->capacity;
+int **tmp=new int*[numberOfPointers+10];
+if(tmp==NULL) return false;
+for(int e=0; e<numberOfPointers;e++) tmp[e]=this->ptr[e];
+delete [] this->ptr;
+this->ptr=tmp;
+}
+int i=this->capacity/10;
+this->ptr[i]=new int[10];
+if(this->ptr[i]==NULL) return false;
+this->capacity=this->capacity+10;
+return true;
 }
 TMArrayList::TMArrayList()
 {
-
+this->ptr=new int *[10];
+this->ptr[0]=new int[10];
+this->capacity=10;
+this->size=0;
 }
-TMArrayList::TMArrayList(int buffer)
+TMArrayList::TMArrayList(int bufferSize)
 {
+if(bufferSize<=0)
+{
+this->ptr=new int *[10];
+this->ptr[0]=new int[10];
+this->capacity=10;
+this->size=0;
+}
+else
+{
+int rows;
+int numberOfPointers;
+rows=bufferSize/10;
+if(bufferSize%10!=0) rows++;
+numberOfPointers= rows+(10-(rows%10));
+this->ptr=new int *[numberOfPointers];
+for(int e=0; e<rows;e++) this->ptr[e]=new int[10];
+this->capacity=rows*10;
+this->size=0;
+}
 }
 TMArrayList::TMArrayList(const TMArrayList &other)
 {
