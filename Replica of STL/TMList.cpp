@@ -1,4 +1,6 @@
 #include<iostream>
+#include<stdio.h>
+using namespace std;
 #define bool int
 #define TRUE 1
 #define True 1
@@ -14,7 +16,7 @@ virtual void add(int data,bool *success)=0;
 virtual void insert(int index,int data,bool *success)=0;
 virtual int removeAt(int index,int *success)=0;
 virtual int get(int index,int *success) const=0;
-virtual void update(int index,int *success)=0;
+virtual void update(int index,int data,int *success)=0;
 virtual void removeAll()=0;
 virtual void clear()=0;
 virtual int getSize()=0;
@@ -30,11 +32,12 @@ public:
 TMArrayList();
 TMArrayList(int buffer);
 TMArrayList(const TMArrayList &other);
+virtual ~TMArrayList();
 void add(int data,bool *success);
 void insert(int index,int data,bool *success);
 int removeAt(int index,int *success);
 int get(int index,int *success) const;
-void update(int index,int *success);
+void update(int index,int data,int *success);
 void removeAll();
 void clear();
 int getSize();
@@ -90,6 +93,13 @@ TMArrayList::TMArrayList(const TMArrayList &other)
 {
 
 }
+TMArrayList:: ~TMArrayList()
+{
+int rows=this->capacity/10;
+int j;
+for(j=0;j<rows;j++) delete [] this->ptr[j];
+delete [] this->ptr;
+}
 void TMArrayList::add(int data,bool *success)
 {
 if(success) *success=false;
@@ -106,10 +116,43 @@ if(success) *success=true;
 }
 void TMArrayList::insert(int index,int data,bool *success)
 {
+if(success) *success=false;
+if(index<0 || index>this->size) return;
+if(index==this->size)
+{
+this->add(data,success);
+return;
+}
+bool succ;
+int k=this->get(this->size-1,&succ);
+this->add(k,&succ);
+if(succ==false) return;
+int j;
+while(j>=index)
+{
+this->update(j+1,this->get(j,&succ),&succ);
+j--;
+}
+this->update(index,data,&succ);
+if(success) *success=true;
 }
 int TMArrayList::removeAt(int index,int *success)
 {
-return 0;
+if(success) *success=false;
+if(index<0 || index>=this->size) return 0;
+bool succ;
+int data=this->get(index,&succ);
+int j;
+int ep=this->size-2;
+j=index;
+while(j<=ep)
+{
+this->update(j,this->get(j+1,&succ),&succ);
+j++;
+}
+this->size--;
+if(success) *success=true;
+return data;
 }
 int TMArrayList::get(int index,int *success) const
 {
@@ -120,14 +163,22 @@ int columnIndex=index%10;
 if(success) *success=true;
 return ptr[rowIndex][columnIndex];
 }
-void TMArrayList::update(int index,int *success)
+void TMArrayList::update(int index,int data,int *success)
 {
+if(success) *success=false;
+if(index<0 || index>=size) return;
+int rowIndex=index/10;
+int columnIndex=index%10;
+this->ptr[rowIndex][columnIndex]=data;
+if(success) *success=true;
 }
 void TMArrayList::removeAll()
 {
+this->size=0;
 }
 void TMArrayList::clear()
 {
+this->size=0;
 }
 int TMArrayList::getSize()
 {
