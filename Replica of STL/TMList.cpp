@@ -13,7 +13,7 @@ class TMList
 {
 public:
 virtual void add(int data,bool *success)=0;
-virtual void insert(int index,int data,bool *success)=0;
+virtual void insertAt(int index,int data,bool *success)=0;
 virtual int removeAt(int index,int *success)=0;
 virtual int get(int index,int *success) const=0;
 virtual void update(int index,int data,int *success)=0;
@@ -34,7 +34,7 @@ TMArrayList(int buffer);
 TMArrayList(const TMArrayList &other);
 virtual ~TMArrayList();
 void add(int data,bool *success);
-void insert(int index,int data,bool *success);
+void insertAt(int index,int data,bool *success);
 int removeAt(int index,int *success);
 int get(int index,int *success) const;
 void update(int index,int data,int *success);
@@ -114,7 +114,7 @@ this->ptr[rowIndex][columnIndex]=data;
 this->size++;
 if(success) *success=true;
 }
-void TMArrayList::insert(int index,int data,bool *success)
+void TMArrayList::insertAt(int index,int data,bool *success)
 {
 if(success) *success=false;
 if(index<0 || index>this->size) return;
@@ -183,4 +183,42 @@ this->size=0;
 int TMArrayList::getSize()
 {
 return this->size;
+}
+int main()
+{
+TMArrayList list1(6000);
+bool k;
+for(int x=100;x<=123;x++) list1.add(x,&k);
+printf("Size is %d\n",list1.getSize());
+for(int e=0;e<list1.getSize();e++)
+{
+cout<<list1.get(e,&k)<<" ";
+} 
+cout<<endl;
+list1.update(102,5000,&k);
+if(k) cout<<"Data updated at index 102"<<endl;
+else cout<<"unable to update"<<endl;
+list1.update(3,3030,&k);
+for(int e=0;e<list1.getSize();e++)
+{
+cout<<list1.get(e,&k)<<" ";
+} 
+cout<<endl;
+list1.insertAt(8,6060,&k);
+if(k) cout<<"Data updated at index 8"<<endl;
+else cout<<"unable to update"<<endl;
+for(int e=0;e<list1.getSize();e++)
+{
+cout<<list1.get(e,&k)<<" ";
+} 
+cout<<endl;
+int u=list1.removeAt(3,&k);
+if(k) cout<<"Data remove at index 3"<<endl;
+else cout<<"unable to remove"<<endl;
+for(int e=0;e<list1.getSize();e++)
+{
+cout<<list1.get(e,&k)<<" ";
+} 
+cout<<endl;
+return 0;
 }
