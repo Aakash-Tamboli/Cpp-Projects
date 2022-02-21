@@ -348,7 +348,41 @@ void TMForwardList::insertAt(int index,int data,bool *success)
 }
 int TMForwardList::removeAt(int index,int *success)
 {
-return 0;
+int data=0;
+if(success) *success=false;
+if(index<0 || index>=this->size) return data;
+TMNode *p1,*p2;
+int x=0;
+p1=this->start;
+while(x<index)
+{
+p2=p1;
+p1=p1->next;
+x++;
+}
+data=p1->data;
+if(p1==this->start && p1==this->end) // only One Node Present
+{
+this->start=NULL;
+this->end=NULL;
+}
+else if(p1==this->start) // many node present but delete first
+{
+this->start=this->start->next;
+}
+else if(p1==this->end) // many node present but delete last
+{
+p2->next=NULL;
+this->end=p2;
+}
+else // Many but not First nor Last
+{
+p2->next=p1->next;
+}
+this->size--;
+delete p1;
+if(success) *success=true;
+return data;
 }
 int TMForwardList::get(int index,int *success) const
 {
@@ -362,12 +396,29 @@ return t->data;
 }
 void TMForwardList::update(int index,int data,int *success)
 {
+if(success) *success=false;
+if(index<0 || index>=this->size) return;
+TMNode *t;
+int x;
+for(t=this->start,x=0;x<index;x++,t=t->next);
+t->data=data;
+if(success) *success=true;
 }
 void TMForwardList::removeAll()
 {
+this->clear();
 }
 void TMForwardList::clear()
 {
+TMNode *t;
+while(this->start!=NULL)
+{
+t=this->start;
+this->start=this->start->next;
+delete t;
+}
+this->end=NULL;
+this->size=0;
 }
 int TMForwardList::getSize()
 {
@@ -391,18 +442,11 @@ int main()
 TMForwardList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-TMForwardList list2;
-for(int x=124;x<=130;x++) list2.add(x,&k);
-cout<<"Content of Forward list 1"<<endl;
+cout<<"Content of Forward list 1 After deleting "<<endl;
+cout<<"element is pop out"<<list1.removeAt(5,&k)<<endl;
 for(int i=0; i<list1.getSize(); i++)
 {
 cout<<list1.get(i,&k)<<" ";
-}
-cout<<endl;
-cout<<"Content of Forward list 2"<<endl;
-for(int i=0; i<list2.getSize(); i++)
-{
-cout<<list2.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
