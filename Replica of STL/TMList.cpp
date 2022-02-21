@@ -345,6 +345,37 @@ if(success) *success=true;
 }
 void TMForwardList::insertAt(int index,int data,bool *success)
 {
+if(success) *success=false;
+if(index<0 || index > this->size) return;
+if(index==this->size)
+{
+this->add(data,success);
+return;
+}
+TMNode *node;
+node=new TMNode;
+if(node==NULL) return;
+node->data=data;
+int x;
+TMNode *p1,*p2;
+p1=this->start;
+for(x=0; x<index; x++)
+{
+p2=p1;
+p1=p1->next;
+}
+if(p1==this->start)
+{
+node->next=this->start;
+this->start=node;
+}
+else
+{
+node->next=p1;
+p2->next=node;
+}
+this->size++;
+if(success) *success=true;
 }
 int TMForwardList::removeAt(int index,int *success)
 {
@@ -443,7 +474,7 @@ TMForwardList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
 cout<<"Content of Forward list 1 After deleting "<<endl;
-cout<<"element is pop out"<<list1.removeAt(5,&k)<<endl;
+list1.insertAt(24,895949,&k);
 for(int i=0; i<list1.getSize(); i++)
 {
 cout<<list1.get(i,&k)<<" ";
