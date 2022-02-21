@@ -1,3 +1,9 @@
+Some keypoints:
+1) In TMForwardList class we have parameterized constructor his parameter
+	is bufferSize and i know that there is no meaning in ForwardList which
+	is impementation of SLL, So I Just give this feature to if Somebody use
+	TMArrayClass so he thinks that our TMForward List class also have para-
+	-merized contructor may be called out?...
 Bugs:
 1) Bug in What if constructor fails to allocate Memeory.
 2) Bug in what if copy constructor fails to allocate memeory
