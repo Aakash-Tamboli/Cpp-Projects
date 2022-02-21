@@ -91,7 +91,34 @@ this->size=0;
 }
 TMArrayList::TMArrayList(const TMArrayList &other)
 {
-
+int bufferSize=other.size;
+if(bufferSize<=0)
+{
+this->ptr=new int *[10];
+this->ptr[0]=new int[10];
+this->capacity=10;
+this->size=0;
+}
+else
+{
+int rows;
+int numberOfPointers;
+rows=bufferSize/10;
+if(bufferSize%10!=0) rows++;
+numberOfPointers=rows+(10-(rows%10));
+this->ptr=new int*[numberOfPointers];
+for(int e=0;e<rows;e++)
+{
+this->ptr[e]=new int[10];
+}
+this->capacity=rows*10;
+this->size=0;
+}
+bool succ;
+for(int e=0; e<other.size;e++)
+{
+this->add(other.get(e,&succ),&succ);
+}
 }
 TMArrayList:: ~TMArrayList()
 {

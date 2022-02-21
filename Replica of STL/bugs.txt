@@ -1,1 +1,2 @@
 1) Bug in What if constructor fails to allocate Memeory.
+2) Bug in what if copy constructor fails to allocate memeory
