@@ -1,0 +1,15 @@
+Bugs:
+1) Bug in What if constructor fails to allocate Memeory.
+2) Bug in what if copy constructor fails to allocate memeory
+vision for future:
+1) fixing bugs related to constructor and memeory allocation fails;
+introducing features
+	a)Implement subscript operator[]
+	b) we have TMlist absract class and let's say we two classes named
+	     TMArrayList and TMforwardList, so feature is a1 and a2 both are
+		different classes and its base class is TMList which is abrsract
+		class and we another object a3 whose comes from any of this two
+		classes so we need to acchive this.
+		=>	a3=a1+a2;
+			a1 and a2 both are diffenet class but base class is same;
+		=>	a1(a2);
