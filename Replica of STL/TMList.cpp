@@ -43,6 +43,7 @@ void removeAll();
 void clear();
 int getSize();
 TMArrayList& operator=(const TMArrayList &other);
+TMArrayList operator+(const TMArrayList &other);
 void operator+=(const TMArrayList &other);
 };
 bool TMArrayList::addRow()
@@ -251,6 +252,15 @@ this->size=other.size;
 }
 return *this;
 }
+TMArrayList TMArrayList::operator+(const TMArrayList &other)
+{
+TMArrayList k;
+int succ;
+for(int e=0; e<this->size; e++) k.add(this->get(e,&succ),&succ);
+for(int e=0; e<other.size; e++) k.add(other.get(e,&succ),&succ);
+k.allocationFlag=1;
+return k;
+}
 void TMArrayList::operator+=(const TMArrayList &other)
 {
 int succ;
@@ -264,12 +274,26 @@ int main()
 TMArrayList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-cout<<"Size of list 1 is "<<list1.getSize()<<endl;
-TMArrayList list2(list1);
-cout<<"This is Content of List 2"<<endl;
-for(int x=0;x<list2.getSize();x++)
+TMArrayList list2;
+for(int x=124;x<=130;x++) list2.add(x,&k);
+cout<<"Content of list 1"<<endl;
+for(int i=0; i<list1.getSize(); i++)
 {
-cout<<list2.get(x,&k)<<" ";
+cout<<list1.get(i,&k)<<" ";
+}
+cout<<endl;
+cout<<"Content of list 2"<<endl;
+for(int i=0; i<list2.getSize(); i++)
+{
+cout<<list2.get(i,&k)<<" ";
+}
+cout<<endl;
+TMArrayList list3;
+list3=list1+list2;
+cout<<"content of list 3"<<endl;
+for(int i=0; i<list3.getSize(); i++)
+{
+cout<<list3.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
