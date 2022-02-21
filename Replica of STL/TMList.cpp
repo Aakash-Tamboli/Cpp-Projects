@@ -269,31 +269,140 @@ for(int e=0; e<other.size; e++)
 this->add(other.get(e,&succ),&succ);
 }
 }
+// TMForwardList starts here
+class TMForwardList:public TMList
+{
+class TMNode
+{
+public:
+int data;
+TMNode *next;
+TMNode()
+{
+this->next=NULL;
+}
+};
+private:
+char allocationFlag;
+TMNode *start,*end;
+int size;
+public:
+TMForwardList();
+TMForwardList(int buffer);
+TMForwardList(const TMForwardList &other);
+virtual ~TMForwardList();
+void add(int data,bool *success);
+void insertAt(int index,int data,bool *success);
+int removeAt(int index,int *success);
+int get(int index,int *success) const;
+void update(int index,int data,int *success);
+void removeAll();
+void clear();
+int getSize();
+TMForwardList& operator=(const TMForwardList &other);
+TMForwardList operator+(const TMForwardList &other);
+void operator+=(const TMForwardList &other);
+};
+TMForwardList::TMForwardList()
+{
+this->allocationFlag=0;
+this->start=NULL;
+this->end=NULL;
+this->size=0;
+}
+TMForwardList::TMForwardList(int bufferSize)
+{
+this->allocationFlag=0;
+this->start=NULL;
+this->end=NULL;
+this->size=0;
+}
+TMForwardList::TMForwardList(const TMForwardList &other)
+{
+}
+TMForwardList:: ~TMForwardList()
+{
+}
+void TMForwardList::add(int data,bool *success)
+{
+if(success) *success=false;
+TMNode *t;
+t= new TMNode;
+if(t==NULL) return;
+t->data=data;
+if(this->start==NULL)
+{
+this->start=t;
+this->end=t;
+}
+else
+{
+this->end->next=t;
+this->end=t;
+}
+this->size++;
+if(success) *success=true;
+}
+void TMForwardList::insertAt(int index,int data,bool *success)
+{
+}
+int TMForwardList::removeAt(int index,int *success)
+{
+return 0;
+}
+int TMForwardList::get(int index,int *success) const
+{
+if(success) *success=false;
+if(index<0 || index >= this->size) return 0;
+TMNode *t;
+int x;
+for(x=0,t=this->start; x<index; x++,t=t->next);
+if(success) *success=true;
+return t->data;
+}
+void TMForwardList::update(int index,int data,int *success)
+{
+}
+void TMForwardList::removeAll()
+{
+}
+void TMForwardList::clear()
+{
+}
+int TMForwardList::getSize()
+{
+return this->size;
+}
+TMForwardList& TMForwardList::operator=(const TMForwardList &other)
+{
+return *this;
+}
+TMForwardList TMForwardList::operator+(const TMForwardList &other)
+{
+return TMForwardList();
+}
+void TMForwardList::operator+=(const TMForwardList &other)
+{
+}
+// TMForwardList end here
+
 int main()
 {
-TMArrayList list1(6000);
+TMForwardList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-TMArrayList list2;
+TMForwardList list2;
 for(int x=124;x<=130;x++) list2.add(x,&k);
-cout<<"Content of list 1"<<endl;
+cout<<"Content of Forward list 1"<<endl;
 for(int i=0; i<list1.getSize(); i++)
 {
 cout<<list1.get(i,&k)<<" ";
 }
 cout<<endl;
-cout<<"Content of list 2"<<endl;
+cout<<"Content of Forward list 2"<<endl;
 for(int i=0; i<list2.getSize(); i++)
 {
 cout<<list2.get(i,&k)<<" ";
-}
-cout<<endl;
-TMArrayList list3;
-list3=list1+list2;
-cout<<"content of list 3"<<endl;
-for(int i=0; i<list3.getSize(); i++)
-{
-cout<<list3.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
