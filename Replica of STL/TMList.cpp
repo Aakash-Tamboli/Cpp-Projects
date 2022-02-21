@@ -41,6 +41,8 @@ void update(int index,int data,int *success);
 void removeAll();
 void clear();
 int getSize();
+TMArrayList& operator=(const TMArrayList &other);
+void operator+=(const TMArrayList &other);
 };
 bool TMArrayList::addRow()
 {
@@ -211,41 +213,36 @@ int TMArrayList::getSize()
 {
 return this->size;
 }
+TMArrayList& TMArrayList::operator=(const TMArrayList &other)
+{
+this->size=0;
+int succ;
+for(int e=0; e<other.size;e++)
+{
+this->add(other.get(e,&succ),&succ);
+}
+return  *this;
+}
+void TMArrayList::operator+=(const TMArrayList &other)
+{
+int succ;
+for(int e=0; e<other.size; e++)
+{
+this->add(other.get(e,&succ),&succ);
+}
+}
 int main()
 {
 TMArrayList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-printf("Size is %d\n",list1.getSize());
-for(int e=0;e<list1.getSize();e++)
+cout<<"Size of list 1 is "<<list1.getSize()<<endl;
+TMArrayList list2(list1);
+cout<<"This is Content of List 2"<<endl;
+for(int x=0;x<list2.getSize();x++)
 {
-cout<<list1.get(e,&k)<<" ";
-} 
-cout<<endl;
-list1.update(102,5000,&k);
-if(k) cout<<"Data updated at index 102"<<endl;
-else cout<<"unable to update"<<endl;
-list1.update(3,3030,&k);
-for(int e=0;e<list1.getSize();e++)
-{
-cout<<list1.get(e,&k)<<" ";
-} 
-cout<<endl;
-list1.insertAt(8,6060,&k);
-if(k) cout<<"Data updated at index 8"<<endl;
-else cout<<"unable to update"<<endl;
-for(int e=0;e<list1.getSize();e++)
-{
-cout<<list1.get(e,&k)<<" ";
-} 
-cout<<endl;
-int u=list1.removeAt(3,&k);
-if(k) cout<<"Data remove at index 3"<<endl;
-else cout<<"unable to remove"<<endl;
-for(int e=0;e<list1.getSize();e++)
-{
-cout<<list1.get(e,&k)<<" ";
-} 
+cout<<list2.get(x,&k)<<" ";
+}
 cout<<endl;
 return 0;
 }
