@@ -27,6 +27,7 @@ private:
 int **ptr;
 int capacity;
 int size;
+char allocationFlag;
 bool addRow();
 public:
 TMArrayList();
@@ -68,9 +69,11 @@ this->ptr=new int *[10];
 this->ptr[0]=new int[10];
 this->capacity=10;
 this->size=0;
+this->allocationFlag=0;
 }
 TMArrayList::TMArrayList(int bufferSize)
 {
+this->allocationFlag=0;
 if(bufferSize<=0)
 {
 this->ptr=new int *[10];
@@ -94,6 +97,7 @@ this->size=0;
 TMArrayList::TMArrayList(const TMArrayList &other)
 {
 int bufferSize=other.size;
+this->allocationFlag=0;
 if(bufferSize<=0)
 {
 this->ptr=new int *[10];
@@ -124,10 +128,17 @@ this->add(other.get(e,&succ),&succ);
 }
 TMArrayList:: ~TMArrayList()
 {
+// This is Why Because We know that what we Implelemented in operator+
+if(this->allocationFlag==0)
+{
 int rows=this->capacity/10;
 int j;
-for(j=0;j<rows;j++) delete [] this->ptr[j];
-delete [] this->ptr;
+for(j=0; j<rows;j++)
+{
+delete [] this->ptr[j];
+}
+delete[] this->ptr;
+}
 }
 void TMArrayList::add(int data,bool *success)
 {
@@ -215,13 +226,30 @@ return this->size;
 }
 TMArrayList& TMArrayList::operator=(const TMArrayList &other)
 {
+if(other.allocationFlag==0)
+{
+//this is normal case;
 this->size=0;
 int succ;
-for(int e=0; e<other.size;e++)
+for(int e=0; e<other.size; e++)
 {
 this->add(other.get(e,&succ),&succ);
 }
-return  *this;
+}
+else
+{
+int rows=this->capacity/10;
+int j;
+for(j=0; j<rows; j++)
+{
+delete [] this->ptr[j];
+}
+delete [] this->ptr;
+this->ptr=other.ptr;
+this->capacity=other.capacity;
+this->size=other.size;
+}
+return *this;
 }
 void TMArrayList::operator+=(const TMArrayList &other)
 {
