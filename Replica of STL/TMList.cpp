@@ -481,7 +481,10 @@ return *this;
 }
 TMForwardList TMForwardList::operator+(const TMForwardList &other)
 {
-return TMForwardList();
+TMForwardList k;
+k+=(*this);
+k+=other;
+return k;
 }
 void TMForwardList::operator+=(const TMForwardList &other)
 {
@@ -494,13 +497,14 @@ int main()
 {
 TMForwardList list1(6000),list2;
 bool k;
-for(int x=100;x<=123;x++) list1.add(x,&k);
+for(int x=100;x<123;x++) list1.add(x,&k);
 for(int x=123;x<=140;x++) list2.add(x,&k);
-cout<<"content of list 1 using operator="<<endl;
-list1+=list2; 
-for(int i=0; i<list1.getSize(); i++)
+cout<<"content of list 3 using operator+"<<endl;
+TMForwardList list3;
+list3=list1+list2;
+for(int i=0; i<list3.getSize(); i++)
 {
-cout<<list1.get(i,&k)<<" ";
+cout<<list3.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
