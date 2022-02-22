@@ -485,20 +485,22 @@ return TMForwardList();
 }
 void TMForwardList::operator+=(const TMForwardList &other)
 {
+int k;
+for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 }
 // TMForwardList end here
 
 int main()
 {
-TMForwardList list1(6000);
+TMForwardList list1(6000),list2;
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-TMForwardList list2;
-list2=list1;
-cout<<"content of list 2 using operator="<<endl;
-for(int i=0; i<list2.getSize(); i++)
+for(int x=123;x<=140;x++) list2.add(x,&k);
+cout<<"content of list 1 using operator="<<endl;
+list1+=list2; 
+for(int i=0; i<list1.getSize(); i++)
 {
-cout<<list2.get(i,&k)<<" ";
+cout<<list1.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
