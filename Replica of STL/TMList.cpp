@@ -19,7 +19,7 @@ virtual int get(int index,int *success) const=0;
 virtual void update(int index,int data,int *success)=0;
 virtual void removeAll()=0;
 virtual void clear()=0;
-virtual int getSize()=0;
+virtual int getSize()const=0;
 };
 class TMArrayList:public TMList
 {
@@ -41,7 +41,7 @@ int get(int index,int *success) const;
 void update(int index,int data,int *success);
 void removeAll();
 void clear();
-int getSize();
+int getSize()const;
 TMArrayList& operator=(const TMArrayList &other);
 TMArrayList operator+(const TMArrayList &other);
 void operator+=(const TMArrayList &other);
@@ -221,7 +221,7 @@ void TMArrayList::clear()
 {
 this->size=0;
 }
-int TMArrayList::getSize()
+int TMArrayList::getSize() const
 {
 return this->size;
 }
@@ -298,7 +298,7 @@ int get(int index,int *success) const;
 void update(int index,int data,int *success);
 void removeAll();
 void clear();
-int getSize();
+int getSize()const;
 TMForwardList& operator=(const TMForwardList &other);
 TMForwardList operator+(const TMForwardList &other);
 void operator+=(const TMForwardList &other);
@@ -319,6 +319,15 @@ this->size=0;
 }
 TMForwardList::TMForwardList(const TMForwardList &other)
 {
+this->start=NULL;
+this->end=NULL;
+this->size=0;
+this->allocationFlag=0;
+int succ;
+for(int e=0; e<other.getSize();e++)
+{
+this->add(other.get(e,&succ),&succ);
+}
 }
 TMForwardList:: ~TMForwardList()
 {
@@ -451,7 +460,7 @@ delete t;
 this->end=NULL;
 this->size=0;
 }
-int TMForwardList::getSize()
+int TMForwardList::getSize()const
 {
 return this->size;
 }
@@ -473,11 +482,11 @@ int main()
 TMForwardList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-cout<<"Content of Forward list 1 After deleting "<<endl;
-list1.insertAt(24,895949,&k);
-for(int i=0; i<list1.getSize(); i++)
+TMForwardList list2(list1);
+cout<<"content of list 2"<<endl;
+for(int i=0; i<list2.getSize(); i++)
 {
-cout<<list1.get(i,&k)<<" ";
+cout<<list2.get(i,&k)<<" ";
 }
 cout<<endl;
 return 0;
