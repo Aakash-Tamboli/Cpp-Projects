@@ -466,6 +466,17 @@ return this->size;
 }
 TMForwardList& TMForwardList::operator=(const TMForwardList &other)
 {
+if(other.allocationFlag==1)
+{
+this->size=other.size;
+this->start=other.start;
+this->end=other.end;
+}
+else
+{
+int succ;
+for(int e=0; e<other.getSize();e++) this->add(other.get(e,&succ),&succ);
+}
 return *this;
 }
 TMForwardList TMForwardList::operator+(const TMForwardList &other)
@@ -482,8 +493,9 @@ int main()
 TMForwardList list1(6000);
 bool k;
 for(int x=100;x<=123;x++) list1.add(x,&k);
-TMForwardList list2(list1);
-cout<<"content of list 2"<<endl;
+TMForwardList list2;
+list2=list1;
+cout<<"content of list 2 using operator="<<endl;
 for(int i=0; i<list2.getSize(); i++)
 {
 cout<<list2.get(i,&k)<<" ";
