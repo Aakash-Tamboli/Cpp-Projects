@@ -33,6 +33,7 @@ public:
 TMArrayList();
 TMArrayList(int buffer);
 TMArrayList(const TMArrayList &other);
+TMArrayList(const TMList &other);
 virtual ~TMArrayList();
 void add(int data,bool *success);
 void insertAt(int index,int data,bool *success);
@@ -43,8 +44,11 @@ void removeAll();
 void clear();
 int getSize()const;
 TMArrayList& operator=(const TMArrayList &other);
+TMArrayList& operator=(const TMList &other);
 TMArrayList operator+(const TMArrayList &other);
-void operator+=(const TMArrayList &other);
+TMArrayList operator+(const TMList &other);
+void operator+=(const TMArrayList &other); 
+void operator+=(const TMList &other); // Note Done
 };
 bool TMArrayList::addRow()
 {
@@ -127,6 +131,18 @@ for(int e=0; e<other.size;e++)
 this->add(other.get(e,&succ),&succ);
 }
 }
+TMArrayList::TMArrayList(const TMList &other)
+{
+this->ptr=new int *[10];
+this->ptr[0]=new int[10];
+this->capacity=10;
+this->size=0;
+this->allocationFlag=0;
+int e;
+int succ;
+for(e=0;e<other.getSize();e++) this->add(other.get(e,&succ),&succ);
+}
+
 TMArrayList:: ~TMArrayList()
 {
 // This is Why Because We know that what we Implelemented in operator+
@@ -252,6 +268,13 @@ this->size=other.size;
 }
 return *this;
 }
+TMArrayList& TMArrayList::operator=(const TMList &other)
+{
+this->size=0;
+int succ;
+for(int e=0; e<other.getSize(); e++) this->add(other.get(e,&succ),&succ);
+return *this;
+}
 TMArrayList TMArrayList::operator+(const TMArrayList &other)
 {
 TMArrayList k;
@@ -261,6 +284,15 @@ for(int e=0; e<other.size; e++) k.add(other.get(e,&succ),&succ);
 k.allocationFlag=1;
 return k;
 }
+TMArrayList TMArrayList::operator+(const TMList &other)
+{
+TMArrayList k;
+int succ;
+for(int e=0; e<this->size; e++) k.add(this->get(e,&succ),&succ);
+for(int e=0; e<other.getSize(); e++) k.add(other.get(e,&succ),&succ);
+return k;
+}
+
 void TMArrayList::operator+=(const TMArrayList &other)
 {
 int succ;
@@ -268,6 +300,11 @@ for(int e=0; e<other.size; e++)
 {
 this->add(other.get(e,&succ),&succ);
 }
+}
+void TMArrayList::operator+=(const TMList &other)
+{
+int succ;
+for(int e=0; e<other.getSize(); e++) this->add(other.get(e,&succ),&succ);
 }
 // TMForwardList starts here
 class TMForwardList:public TMList
@@ -290,6 +327,7 @@ public:
 TMForwardList();
 TMForwardList(int buffer);
 TMForwardList(const TMForwardList &other);
+TMForwardList(const TMList &other);
 virtual ~TMForwardList();
 void add(int data,bool *success);
 void insertAt(int index,int data,bool *success);
@@ -300,8 +338,11 @@ void removeAll();
 void clear();
 int getSize()const;
 TMForwardList& operator=(const TMForwardList &other);
+TMForwardList& operator=(const TMList &other);
 TMForwardList operator+(const TMForwardList &other);
+TMForwardList operator+(const TMList &other);
 void operator+=(const TMForwardList &other);
+void operator+=(const TMList &other);
 };
 TMForwardList::TMForwardList()
 {
@@ -318,6 +359,18 @@ this->end=NULL;
 this->size=0;
 }
 TMForwardList::TMForwardList(const TMForwardList &other)
+{
+this->start=NULL;
+this->end=NULL;
+this->size=0;
+this->allocationFlag=0;
+int succ;
+for(int e=0; e<other.getSize();e++)
+{
+this->add(other.get(e,&succ),&succ);
+}
+}
+TMForwardList::TMForwardList(const TMList &other)
 {
 this->start=NULL;
 this->end=NULL;
@@ -466,6 +519,7 @@ return this->size;
 }
 TMForwardList& TMForwardList::operator=(const TMForwardList &other)
 {
+this->clear();
 if(other.allocationFlag==1)
 {
 this->size=other.size;
@@ -479,7 +533,21 @@ for(int e=0; e<other.getSize();e++) this->add(other.get(e,&succ),&succ);
 }
 return *this;
 }
+TMForwardList& TMForwardList::operator=(const TMList &other)
+{
+int succ;
+this->clear();
+for(int e=0; e<other.getSize();e++) this->add(other.get(e,&succ),&succ);
+return *this;
+}
 TMForwardList TMForwardList::operator+(const TMForwardList &other)
+{
+TMForwardList k;
+k+=(*this);
+k+=other;
+return k;
+}
+TMForwardList TMForwardList::operator+(const TMList &other)
 {
 TMForwardList k;
 k+=(*this);
@@ -491,21 +559,25 @@ void TMForwardList::operator+=(const TMForwardList &other)
 int k;
 for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 }
+void TMForwardList::operator+=(const TMList &other)
+{
+int k;
+for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
+}
 // TMForwardList end here
 
 int main()
 {
-TMForwardList list1(6000),list2;
-bool k;
-for(int x=100;x<123;x++) list1.add(x,&k);
-for(int x=123;x<=140;x++) list2.add(x,&k);
-cout<<"content of list 3 using operator+"<<endl;
-TMForwardList list3;
-list3=list1+list2;
-for(int i=0; i<list3.getSize(); i++)
-{
-cout<<list3.get(i,&k)<<" ";
-}
+bool succ;
+TMArrayList arr;
+for(int e=1;e<=20;e++) arr.add(e,&succ);
+cout<<"content of TMArray Obj"<<endl;
+for(int i=0;i<arr.getSize();i++) cout<<arr.get(i,&succ)<<" ";
+cout<<endl;
+TMForwardList sll;
+sll=sll+arr;
+cout<<"Content of TMFowardList obj Using + operator"<<endl;
+for(int i=0;i<sll.getSize();i++) cout<<sll.get(i,&succ)<<" | ";
 cout<<endl;
 return 0;
 }
