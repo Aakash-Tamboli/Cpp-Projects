@@ -1,5 +1,4 @@
 #include<iostream>
-#include<stdio.h>
 using namespace std;
 #define bool int
 #define TRUE 1
@@ -9,6 +8,44 @@ using namespace std;
 #define False 0
 #define false 0
 using namespace std;
+class Iterator
+{
+private:
+Iterator *iterator;
+public:
+Iterator()
+{
+this->iterator=NULL;
+}
+Iterator(const Iterator &other)
+{
+this->iterator=other.iterator;
+}
+Iterator(Iterator *iterator)
+{
+this->iterator=iterator;
+}
+Iterator& operator=(const Iterator &other)
+{
+this->iterator=other.iterator;
+return *this;
+}
+virtual int hasNextMoreElements()
+{
+if(this->iterator!=NULL) return this->iterator->hasNextMoreElements();
+return 0; // Means False;
+}
+virtual int next()
+{
+if(this->iterator!=NULL) return this->iterator->next();
+return 0; //Means False;
+}
+};
+class Iteratable
+{
+public:
+virtual Iterator getIterator()=0;
+};
 class TMList
 {
 public:
@@ -307,7 +344,7 @@ int succ;
 for(int e=0; e<other.getSize(); e++) this->add(other.get(e,&succ),&succ);
 }
 // TMForwardList starts here
-class TMForwardList:public TMList
+class TMForwardList:public TMList,public Iteratable
 {
 class TMNode
 {
@@ -323,7 +360,49 @@ private:
 char allocationFlag;
 TMNode *start,*end;
 int size;
+class TMForwardListIterator:public Iterator
+{
+private:
+TMNode *ptr;
 public:
+TMForwardListIterator()
+{
+this->ptr=NULL;
+}
+TMForwardListIterator(const TMForwardListIterator &other)
+{
+this->ptr=other.ptr;
+}
+TMForwardListIterator& operator=(const TMForwardListIterator &other)
+{
+this->ptr=other.ptr;
+return *this;
+}
+void init(TMNode *ptr)
+{
+this->ptr=ptr;
+}
+int hasNextMoreElements()
+{
+return this->ptr!=NULL;
+}
+int next()
+{
+if(this->ptr==NULL) return 0;
+int data;
+data=this->ptr->data;
+this->ptr=this->ptr->next;
+return data;
+}
+};
+private:
+TMForwardListIterator tmForwardListIterator;
+public:
+Iterator getIterator()
+{
+tmForwardListIterator.init(this->start);
+return Iterator(&tmForwardListIterator);
+}
 TMForwardList();
 TMForwardList(int buffer);
 TMForwardList(const TMForwardList &other);
@@ -568,16 +647,20 @@ for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 
 int main()
 {
-bool succ;
-TMArrayList arr;
-for(int e=1;e<=20;e++) arr.add(e,&succ);
-cout<<"content of TMArray Obj"<<endl;
-for(int i=0;i<arr.getSize();i++) cout<<arr.get(i,&succ)<<" ";
-cout<<endl;
-TMForwardList sll;
-sll=sll+arr;
-cout<<"Content of TMFowardList obj Using + operator"<<endl;
-for(int i=0;i<sll.getSize();i++) cout<<sll.get(i,&succ)<<" | ";
-cout<<endl;
+int k;
+TMForwardList list1;
+list1.add(1000,&k);
+list1.add(2000,&k);
+list1.add(3000,&k);
+list1.add(4000,&k);
+list1.add(56000,&k);
+list1.add(6000,&k);
+list1.add(7000,&k);
+list1.add(8000,&k);
+Iterator iterator=list1.getIterator();
+while(iterator.hasNextMoreElements())
+{
+cout<<iterator.next()<<endl;
+}
 return 0;
 }
