@@ -100,9 +100,7 @@ this->size=other.size;
 }
 TMArrayListIterator& operator=(const TMArrayListIterator &other)
 {
-this->ptr=other.ptr;
 this->index=other.index;
-this->size=other.size;
 return *this;
 }
 int hasNextMoreElements()
@@ -125,7 +123,6 @@ Iterator getIterator()
 {
 TMArrayListIterator *tmArrayListIterator;
 tmArrayListIterator=new TMArrayListIterator(this->ptr,this->size);
-if(tmArrayListIterator==NULL) return Iterator();
 Iterator k(tmArrayListIterator);
 k.setReleaseIteratorAfterIteration(0);
 return k;
@@ -463,7 +460,6 @@ Iterator getIterator()
 {
 TMForwardListIterator *tmForwardListIterator;
 tmForwardListIterator=new TMForwardListIterator(this->start);
-if(tmForwardListIterator==NULL) return Iterator();
 Iterator k(tmForwardListIterator);
 k.setReleaseIteratorAfterIteration(0);
 return k;
@@ -709,22 +705,24 @@ int k;
 for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 }
 // TMForwardList end here
-
 int main()
 {
-bool k;
-cout<<"Iterating TMForwardList List"<<endl;
-TMForwardList list2;
-for(int i=9;i<20;i++) list2.add(i+1,&k);
-Iterator iterator1=list2.getIterator();
-while(iterator1.hasNextMoreElements())
-{
-cout<<iterator1.next()<<" ";
-}
-cout<<endl;
+int k;
 TMArrayList list1;
 for(int i=0;i<10;i++) list1.add(i+1,&k);
 cout<<"Itrating TMArray list"<<endl;
-iterator1=list1.getIterator();
+Iterator iterator1=list1.getIterator();
+while(iterator1.hasNextMoreElements())
+{
+cout<<iterator1.next()<<endl;
+}
+cout<<"Iterating TMForwardList"<<endl;
+TMForwardList list2;
+for(int i=9;i<20;i++) list2.add(i+1,&k);
+iterator1=list2.getIterator();
+while(iterator1.hasNextMoreElements())
+{
+cout<<iterator1.next()<<endl;
+}
 return 0;
 }
