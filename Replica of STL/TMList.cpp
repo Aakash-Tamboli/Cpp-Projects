@@ -11,24 +11,36 @@ using namespace std;
 class Iterator
 {
 private:
+int releaseIteratorAfterIteration;
 Iterator *iterator;
 public:
 Iterator()
 {
+releaseIteratorAfterIteration=1;
 this->iterator=NULL;
 }
 Iterator(const Iterator &other)
 {
+this->releaseIteratorAfterIteration=1;
 this->iterator=other.iterator;
 }
 Iterator(Iterator *iterator)
 {
+this->releaseIteratorAfterIteration=1;
 this->iterator=iterator;
 }
 Iterator& operator=(const Iterator &other)
 {
 this->iterator=other.iterator;
 return *this;
+}
+virtual ~Iterator()
+{
+if(this->releaseIteratorAfterIteration==1) delete this->iterator;
+}
+void setReleaseIteratorAfterIteration(int releaseIteratorAfterIteration)
+{
+this->releaseIteratorAfterIteration=releaseIteratorAfterIteration;
 }
 virtual int hasNextMoreElements()
 {
@@ -46,7 +58,7 @@ class Iteratable
 public:
 virtual Iterator getIterator()=0;
 };
-class TMList
+class TMList:public Iteratable
 {
 public:
 virtual void add(int data,bool *success)=0;
@@ -67,6 +79,57 @@ int size;
 char allocationFlag;
 bool addRow();
 public:
+class TMArrayListIterator:public Iterator
+{
+private:
+int **ptr;
+int index;
+int size;
+public:
+TMArrayListIterator(int **ptr,int size)
+{
+this->ptr=ptr;
+this->index=0;
+this->size=size;
+}
+TMArrayListIterator(const TMArrayListIterator &other)
+{
+this->ptr=other.ptr;
+this->index=other.index;
+this->size=other.size;
+}
+TMArrayListIterator& operator=(const TMArrayListIterator &other)
+{
+this->ptr=other.ptr;
+this->index=other.index;
+this->size=other.size;
+return *this;
+}
+int hasNextMoreElements()
+{
+return index<size;
+}
+int next()
+{
+if(index==size) return 0;
+int data;
+int rowIndex=index/10;
+int columnIndex=index%10;
+data=ptr[rowIndex][columnIndex];
+this->index++;
+return data;
+}
+};
+public:
+Iterator getIterator()
+{
+TMArrayListIterator *tmArrayListIterator;
+tmArrayListIterator=new TMArrayListIterator(this->ptr,this->size);
+if(tmArrayListIterator==NULL) return Iterator();
+Iterator k(tmArrayListIterator);
+k.setReleaseIteratorAfterIteration(0);
+return k;
+}
 TMArrayList();
 TMArrayList(int buffer);
 TMArrayList(const TMArrayList &other);
@@ -344,7 +407,7 @@ int succ;
 for(int e=0; e<other.getSize(); e++) this->add(other.get(e,&succ),&succ);
 }
 // TMForwardList starts here
-class TMForwardList:public TMList,public Iteratable
+class TMForwardList:public TMList
 {
 class TMNode
 {
@@ -401,7 +464,9 @@ Iterator getIterator()
 TMForwardListIterator *tmForwardListIterator;
 tmForwardListIterator=new TMForwardListIterator(this->start);
 if(tmForwardListIterator==NULL) return Iterator();
-return Iterator(tmForwardListIterator);
+Iterator k(tmForwardListIterator);
+k.setReleaseIteratorAfterIteration(0);
+return k;
 }
 TMForwardList();
 TMForwardList(int buffer);
@@ -647,5 +712,19 @@ for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 
 int main()
 {
+bool k;
+cout<<"Iterating TMForwardList List"<<endl;
+TMForwardList list2;
+for(int i=9;i<20;i++) list2.add(i+1,&k);
+Iterator iterator1=list2.getIterator();
+while(iterator1.hasNextMoreElements())
+{
+cout<<iterator1.next()<<" ";
+}
+cout<<endl;
+TMArrayList list1;
+for(int i=0;i<10;i++) list1.add(i+1,&k);
+cout<<"Itrating TMArray list"<<endl;
+iterator1=list1.getIterator();
 return 0;
 }
