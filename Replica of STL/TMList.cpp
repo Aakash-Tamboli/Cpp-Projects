@@ -373,14 +373,14 @@ TMForwardListIterator(const TMForwardListIterator &other)
 {
 this->ptr=other.ptr;
 }
+TMForwardListIterator(TMNode *ptr)
+{
+this->ptr=ptr;
+}
 TMForwardListIterator& operator=(const TMForwardListIterator &other)
 {
 this->ptr=other.ptr;
 return *this;
-}
-void init(TMNode *ptr)
-{
-this->ptr=ptr;
 }
 int hasNextMoreElements()
 {
@@ -395,13 +395,13 @@ this->ptr=this->ptr->next;
 return data;
 }
 };
-private:
-TMForwardListIterator tmForwardListIterator;
 public:
 Iterator getIterator()
 {
-tmForwardListIterator.init(this->start);
-return Iterator(&tmForwardListIterator);
+TMForwardListIterator *tmForwardListIterator;
+tmForwardListIterator=new TMForwardListIterator(this->start);
+if(tmForwardListIterator==NULL) return Iterator();
+return Iterator(tmForwardListIterator);
 }
 TMForwardList();
 TMForwardList(int buffer);
@@ -647,20 +647,5 @@ for(int e=0; e<other.getSize();e++) this->add(other.get(e,&k),&k);
 
 int main()
 {
-int k;
-TMForwardList list1;
-list1.add(1000,&k);
-list1.add(2000,&k);
-list1.add(3000,&k);
-list1.add(4000,&k);
-list1.add(56000,&k);
-list1.add(6000,&k);
-list1.add(7000,&k);
-list1.add(8000,&k);
-Iterator iterator=list1.getIterator();
-while(iterator.hasNextMoreElements())
-{
-cout<<iterator.next()<<endl;
-}
 return 0;
 }
