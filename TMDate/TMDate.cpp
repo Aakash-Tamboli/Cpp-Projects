@@ -234,6 +234,14 @@ int TMDate::getYear()
 {
 return this->year;
 }
+int TMDate::getDayOfWeek()
+{
+if(this->dayNumber==0) return 0;
+int leftDays=this->dayNumber%7;
+int dow=2+leftDays; //2(Monday) as 1/1/1901 is true(3)
+if(dow>7) dow=dow%7;
+return dow-1;
+}
 void TMDate::getMonthString(char *monthString)
 {
 if(this->dayNumber==0)
@@ -276,11 +284,35 @@ if(this->month==12) strcpy(monthShortString,"Dec");
 }
 void TMDate::getDayOfWeekString(char *dayOfWeekString)
 {
-//Pending Because We Right Now not calulated week
+if(this->dayNumber==0)
+{
+*dayOfWeekString='\0';
+return;
+}
+int dow=this->getDayOfWeek();
+if(dow==1) strcpy(dayOfWeekString,"Sunday");
+else if(dow==2) strcpy(dayOfWeekString,"Monday");
+else if(dow==3) strcpy(dayOfWeekString,"Tuesday");
+else if(dow==4) strcpy(dayOfWeekString,"Wednesday");
+else if(dow==5) strcpy(dayOfWeekString,"Thursday");
+else if(dow==6) strcpy(dayOfWeekString,"Friday");
+else strcpy(dayOfWeekString,"Saturday");
 }
 void TMDate::getDayOfWeekShortString(char * dayOfWeekShortString)
 {
-//Pending Because We Right Now not calulated week
+if(this->dayNumber==0)
+{
+*dayOfWeekShortString='\0';
+return;
+}
+int dow=this->getDayOfWeek();
+if(dow==1) strcpy(dayOfWeekShortString,"Sun");
+else if(dow==2) strcpy(dayOfWeekShortString,"Mon");
+else if(dow==3) strcpy(dayOfWeekShortString,"Tue");
+else if(dow==4) strcpy(dayOfWeekShortString,"Wed");
+else if(dow==5) strcpy(dayOfWeekShortString,"Thu");
+else if(dow==6) strcpy(dayOfWeekShortString,"Fri");
+else strcpy(dayOfWeekShortString,"Sat");
 }
 int TMDate::isLeapYear()
 {
@@ -333,14 +365,11 @@ return this->dayNumber!=other.dayNumber;
 }
 int main()
 {
-// testing code;
-TMDate date1="12/10/2020";
-//date1+=18;
-//date1+=19;
-date1-=12;
-cout<<date1<<endl;
-TMDate date2="30/12/1901";
-date2+=1;
-cout<<date2<<endl;
+TMDate date1="18/07/1999";
+char a[12];
+date1.getDayOfWeekString(a);
+cout<<a<<endl;
+date1.getDayOfWeekShortString(a);
+cout<<a<<endl;
 return 0;
 }
