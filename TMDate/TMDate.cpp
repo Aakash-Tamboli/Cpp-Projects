@@ -92,7 +92,7 @@ while(1)
 {
 if(isLeapYear(y)) daysInYear=366; 
 else daysInYear= 365;
-if(x<daysInYear) break;
+if(x<=daysInYear) break;
 x=x-daysInYear;
 y=y+1;
 }
@@ -102,7 +102,7 @@ m=0;
 while(1)
 {
 daysInMonth=mth[m];
-if(x<daysInMonth) break;
+if(x<=daysInMonth) break;
 x=x-daysInMonth;
 m++;
 }
@@ -334,25 +334,13 @@ return this->dayNumber!=other.dayNumber;
 int main()
 {
 // testing code;
-TMDate date1="12/12/2020";
-TMDate date2="10/12/2020";
-TMDate date3="12/12/2020";
-cout<<(date1==date2)<<endl;
-cout<<(date1==date3)<<endl;
-cout<<(date1<date2)<<endl;
-cout<<(date1>date2)<<endl;
-cout<<(date1<=date2)<<endl;
-cout<<(date1>=date2)<<endl;
-cout<<(date1!=date2)<<endl;
-TMDate date4=date2;
-cout<<date4<<endl;
-TMDate date5;
-date5=date1;
-cout<<date5<<endl;
-char a[11];
-date1.getMonthString(a);
-cout<<a<<endl;
-date1.getMonthShortString(a);
-cout<<a<<endl;
+TMDate date1="12/10/2020";
+//date1+=18;
+//date1+=19;
+date1-=12;
+cout<<date1<<endl;
+TMDate date2="30/12/1901";
+date2+=1;
+cout<<date2<<endl;
 return 0;
 }
