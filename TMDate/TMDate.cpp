@@ -43,6 +43,8 @@ int operator<=(const TMDate &other);
 int operator>=(const TMDate &other);
 int operator==(const TMDate &other);
 int operator!=(const TMDate &other);
+TMDate operator+(int days);
+TMDate operator-(int days);
 };
 int TMDate::isLeapYear(int y)
 {
@@ -76,7 +78,7 @@ this->dayNumber=x;
 }
 void TMDate::fromDayNumber()
 {
-if(this->dayNumber==0)
+if(this->dayNumber<=0)
 {
 this->dayOfMonth=0;
 this->month=0;
@@ -202,6 +204,27 @@ this->dayOfMonth=1;
 this->month=1;
 this->year=1900;
 }
+}
+
+TMDate & TMDate::operator=(const char *dateString)
+{
+int d,m,y,isValid;
+this->isValidDate(dateString,&isValid,&d,&m,&y);
+if(isValid)
+{
+this->dayOfMonth=d;
+this->month=m;
+this->year=y;
+this->toDayNumber();
+}
+else
+{
+this->dayNumber=0;
+this->dayOfMonth=1;
+this->month=1;
+this->year=1900;
+}
+return *this;
 }
 TMDate::TMDate(const TMDate &other)
 {
@@ -363,6 +386,23 @@ int TMDate::operator!=(const TMDate &other)
 {
 return this->dayNumber!=other.dayNumber;
 }
+TMDate TMDate::operator+(int days)
+{
+if(this->dayNumber==0) return TMDate("00/00/0000");
+TMDate date;
+date.dayNumber=this->dayNumber+days;
+date.fromDayNumber();
+return date;
+}
+TMDate TMDate::operator-(int days)
+{
+if(this->dayNumber==0) return TMDate("00/00/0000");
+TMDate date;
+date.dayNumber=this->dayNumber-days;
+date.fromDayNumber();
+return date;
+}
+
 int main()
 {
 TMDate date1="18/07/1999";
