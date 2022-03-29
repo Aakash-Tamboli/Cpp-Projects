@@ -1,0 +1,32 @@
+#ifndef __$__UOM__
+#define __$__UOM__ 1234
+#include<iostream>
+namespace inventory
+{
+namespace data_layer
+{
+class UnitOfMeasurement:public abc::IUnitOfMeasurement
+{
+private:
+string title;
+int code;
+public:
+UnitOfMeasurement();
+UnitOfMeasurement(int code,string title);
+UnitOfMeasurement(const UnitOfMeasurement &other);
+virtual ~UnitOfMeasurement();
+void setCode(int code);
+int getCode()const;
+void setTitle(string title);
+string getTitle() const;
+IUnitOfMeasurement & operator=(const IUnitOfMeasurement &other);
+int operator==(const IUnitOfMeasurement &other);
+int operator!=(const IUnitOfMeasurement &other);
+int operator<(const IUnitOfMeasurement &other);
+int operator>(const IUnitOfMeasurement &other);
+int operator<=(const IUnitOfMeasurement &other);
+int operator>=(const IUnitOfMeasurement &other);
+};
+}
+}
+#endif
