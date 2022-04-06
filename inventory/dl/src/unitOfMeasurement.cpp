@@ -67,8 +67,3 @@ int UnitOfMeasurement::operator>=(const IUnitOfMeasurement &other)
 {
 return this->code>=other.getCode();
 }
-int main()
-{
-abc::IUnitOfMeasurement *p=new UnitOfMeasurement;
-return 0;
-}

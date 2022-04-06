@@ -26,8 +26,3 @@ const char * DAOException::what() const throw()
 {
 return this->message.c_str();
 }
-int main()
-{
-DAOException obj;
-return 0;
-}

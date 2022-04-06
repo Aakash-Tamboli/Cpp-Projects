@@ -1,6 +1,7 @@
-#ifndef __$__UOM__
-#define __$__UOM__ 1234
+#ifndef __$__uom__
+#define __$__uom__ 1234
 #include<iostream>
+#include<iuom>
 namespace inventory
 {
 namespace data_layer

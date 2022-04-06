@@ -1,5 +1,5 @@
-#ifndef __$__IUOM__
-#define __$__IUOM__ 124
+#ifndef __$__iuom__
+#define __$__iuom__ 124
 #include<iostream>
 using namespace std;
 namespace inventory
