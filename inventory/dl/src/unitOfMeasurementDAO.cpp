@@ -82,6 +82,40 @@ void UnitOfMeasurementDAO::remove(int code) throw(DAOException)
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByCode(int code) throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+char arr[100];
+if(dataFile.fail())
+{
+sprintf(arr,"Invalid unit of measurement code: %d",code);
+throw DAOException(string(arr));
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+dataFile.close();
+sprintf(arr,"Invalid unit of measurement code: %d",code);
+throw DAOException(string(arr));
+}
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+abc::IUnitOfMeasurement *unitOfMeasurement;
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(_unitOfMeasurement.code==code)
+{
+unitOfMeasurement=new UnitOfMeasurement;
+unitOfMeasurement->setCode(_unitOfMeasurement.code);
+unitOfMeasurement->setTitle(string(_unitOfMeasurement.title));
+dataFile.close();
+return unitOfMeasurement;
+}
+}
+dataFile.close();
+sprintf(arr,"Invalid unit of measurement code: %d",code);
+throw DAOException(string(arr));
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByTitle(string Title) throw(DAOException)
 {
@@ -125,6 +159,21 @@ by user or Destructor.
 }
 int UnitOfMeasurementDAO::getCount() throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+if(dataFile.fail())
+{
+return 0;
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+dataFile.close();
+return 0;
+}
+dataFile.close();
+return header.numberOfRecords;
 }
 int UnitOfMeasurementDAO::codeExist(int code) throw(DAOException)
 {
