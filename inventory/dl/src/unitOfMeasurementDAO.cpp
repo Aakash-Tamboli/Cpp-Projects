@@ -7,6 +7,7 @@
 #include<uomdao>
 #include<fstream>
 #include<stringutils>
+#include<forward_list>
 using namespace inventory;
 using namespace data_layer;
 using namespace stringutils;
@@ -87,6 +88,40 @@ abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByTitle(string Title) throw(D
 }
 forward_list<abc::IUnitOfMeasurement *> * UnitOfMeasurementDAO::getAll() throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+if(dataFile.fail())
+{
+throw DAOException("Unit Of Measurement does not exist.");
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+dataFile.close();
+throw DAOException("Unit Of Measurement does not exist.");
+}
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+abc::IUnitOfMeasurement *unitOfMeasurement;
+forward_list<abc::IUnitOfMeasurement *> *list;
+list=new forward_list<abc::IUnitOfMeasurement *>;
+forward_list<abc::IUnitOfMeasurement *>::iterator i=list->before_begin();
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(_UnitOfMeasurement));
+if(dataFile.fail()) break;
+unitOfMeasurement=new UnitOfMeasurement;
+unitOfMeasurement->setCode(_unitOfMeasurement.code);
+unitOfMeasurement->setTitle(_unitOfMeasurement.title);
+i=list->insert_after(i,unitOfMeasurement);
+}
+dataFile.close();
+return list;
+/*
+Special Note For Aakash,
+All The Memory which is allocated in Heap, this All Memeory will be released 
+by user or Destructor.
+*/
 }
 int UnitOfMeasurementDAO::getCount() throw(DAOException)
 {
