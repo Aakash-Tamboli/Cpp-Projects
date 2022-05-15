@@ -177,6 +177,31 @@ return header.numberOfRecords;
 }
 int UnitOfMeasurementDAO::codeExist(int code) throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+if(dataFile.fail())
+{
+return 0;
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+dataFile.close();
+return 0;
+}
+if(code<1||code>header.lastGeneratedCode)
+{
+/*
+because we know our add method implementation is like whever new record
+is inserted every time lastGeneratedCode increment by 1 and its base value
+is 1 so if parameter code variable have value between 1 and lastgenratedCode
+then code exists but if not then return  0 means false;
+*/
+dataFile.close();
+return 0;
+}
+return 1;
 }
 int UnitOfMeasurementDAO::titleExist(string title) throw(DAOException)
 {
