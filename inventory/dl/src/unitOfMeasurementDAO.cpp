@@ -205,4 +205,29 @@ return 1;
 }
 int UnitOfMeasurementDAO::titleExist(string title) throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+if(dataFile.fail())
+{
+return 0;
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+return 0;
+}
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(compareStringIgnoreCase(_unitOfMeasurement.title,title.c_str())==0)
+{
+dataFile.close();
+return 1;
+}
+}
+dataFile.close();
+return 0;
 }
