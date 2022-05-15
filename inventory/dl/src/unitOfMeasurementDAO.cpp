@@ -117,8 +117,46 @@ dataFile.close();
 sprintf(arr,"Invalid unit of measurement code: %d",code);
 throw DAOException(string(arr));
 }
-abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByTitle(string Title) throw(DAOException)
+abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByTitle(string title) throw(DAOException)
 {
+UnitOfMeasurementDAO::Header header;
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+abc::IUnitOfMeasurement *unitOfMeasurement;
+string vTitle=trimmed(title);
+if(vTitle.length()==0) throw DAOException("title is required");
+if(vTitle.length()>50) throw DAOException("title excced 50 characters");
+fstream dataFile(FILE_NAME,ios::in | ios::binary);
+if(dataFile.fail())
+{
+throw DAOException(string(vTitle)+string(" ,not Exist"));
+}
+dataFile.seekg(0,ios::beg);
+dataFile.read((char *)&header,sizeof(Header));
+if(dataFile.fail())
+{
+dataFile.close();
+throw DAOException(string(vTitle)+string(" ,not Exist"));
+}
+if(header.numberOfRecords==0)
+{
+dataFile.close();
+throw DAOException(string(vTitle)+string(" ,not Exist"));
+}
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(compareStringIgnoreCase(_unitOfMeasurement.title,title.c_str())==0)
+{
+dataFile.close();
+unitOfMeasurement=new UnitOfMeasurement;
+unitOfMeasurement->setCode(_unitOfMeasurement.code);
+unitOfMeasurement->setTitle(_unitOfMeasurement.title);
+return unitOfMeasurement;
+}
+}
+dataFile.close();
+throw DAOException(string(vTitle)+string(" ,not Exist"));
 }
 forward_list<abc::IUnitOfMeasurement *> * UnitOfMeasurementDAO::getAll() throw(DAOException)
 {
