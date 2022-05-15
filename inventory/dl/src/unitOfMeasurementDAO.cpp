@@ -8,6 +8,7 @@
 #include<fstream>
 #include<stringutils>
 #include<forward_list>
+#include<iostream>
 using namespace inventory;
 using namespace data_layer;
 using namespace stringutils;
@@ -76,6 +77,51 @@ unitOfMeasurement->setCode(_unitOfMeasurement.code);
 }
 void UnitOfMeasurementDAO::update(abc::IUnitOfMeasurement *unitOfMeasurement) throw(DAOException)
 {
+int found;
+UnitOfMeasurementDAO::Header header;
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+fstream dataFile(FILE_NAME,ios::in | ios::out | ios::binary);
+if(dataFile.fail())
+{
+throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exist"));
+}
+dataFile.seekg(0,ios::beg);
+dataFile.seekp(0,ios::beg);
+dataFile.read((char *)&header,sizeof(UnitOfMeasurementDAO::Header));
+if(dataFile.fail())
+{
+dataFile.close();
+throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exist"));
+}
+if(header.numberOfRecords==0)
+{
+dataFile.close();
+throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exist"));
+}
+found=0;
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(_unitOfMeasurement.code==unitOfMeasurement->getCode())
+{
+found=1;
+break;
+}
+}
+if(found)
+{
+if(unitOfMeasurement->getTitle()!=_unitOfMeasurement.title)
+{
+dataFile.seekp(sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement)*-1,ios::cur);
+dataFile.write((char *)unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+cout<<"data file written"<<endl;
+}
+dataFile.close();
+return; // no need to update record because code and title is same as in file
+}
+dataFile.close();
+throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exist"));
 }
 void UnitOfMeasurementDAO::remove(int code) throw(DAOException)
 {
