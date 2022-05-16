@@ -156,6 +156,85 @@ dataFile.close();
 }
 void UnitOfMeasurementDAO::remove(int code) throw(DAOException)
 {
+int found;
+UnitOfMeasurementDAO::Header header;
+UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+char arr[101];
+if(code<=0)
+{
+throw DAOException("Invalid Code may be you pass negative or zero");
+}
+fstream dataFile(FILE_NAME,ios::in | ios::out | ios::binary);
+if(dataFile.fail())
+{
+sprintf(arr,"%d is not Exist",code);
+throw DAOException(arr);
+}
+dataFile.seekg(0,ios::beg);
+dataFile.seekp(0,ios::beg);
+dataFile.read((char *)&header,sizeof(UnitOfMeasurementDAO::Header));
+if(dataFile.fail())
+{
+dataFile.close();
+sprintf(arr,"%d is not Exist",code);
+throw DAOException(arr);
+}
+if(header.numberOfRecords==0)
+{
+dataFile.close();
+sprintf(arr,"%d is not Exist",code);
+throw DAOException(arr);
+}
+found=0;
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(_unitOfMeasurement.code==code)
+{
+found=1;
+break;
+}
+}
+if(found==0)
+{
+dataFile.close();
+sprintf(arr,"Code does not exist: %d",code);
+throw DAOException(string(arr));
+}
+else
+{
+dataFile.clear();
+dataFile.seekg(sizeof(UnitOfMeasurementDAO::Header),ios::beg);
+dataFile.seekp(sizeof(UnitOfMeasurementDAO::Header),ios::beg);
+ofstream tmpWrite("tmp.dat",ios::out | ios::binary);
+header.numberOfRecords--;
+tmpWrite.write((char *)&header,sizeof(UnitOfMeasurementDAO::Header));
+while(1)
+{
+dataFile.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(_unitOfMeasurement.code!=code)
+{
+tmpWrite.write((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+}
+}
+dataFile.close();
+tmpWrite.close();
+ifstream tmpRead("tmp.dat",ios::in | ios::binary);
+tmpRead.seekg(0,ios::beg);
+ofstream newDataFile(FILE_NAME,ios::out | ios::binary);
+tmpRead.read((char *)&header,sizeof(UnitOfMeasurementDAO::Header));
+newDataFile.write((char *)&header,sizeof(UnitOfMeasurementDAO::Header));
+while(1)
+{
+tmpRead.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+if(tmpRead.fail()) break;
+newDataFile.write((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+}
+newDataFile.close();
+tmpRead.close();
+}
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByCode(int code) throw(DAOException)
 {
