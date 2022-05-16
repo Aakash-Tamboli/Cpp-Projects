@@ -3,14 +3,22 @@
 #include<daoexception>
 #include<iostream>
 #include<forward_list>
+#include<limits>
+#include<ios>
 using namespace std;
 using namespace inventory;
 using namespace data_layer;
 int main()
 {
-UnitOfMeasurement data(1,"Killograms");
+int code;
+string title;
+cout<<"Enter code: ";
+cin>>code;
+cin.ignore(numeric_limits<streamsize>::max(),'\n');
+cout<<"Enter unit: ";
+getline(cin,title);
+UnitOfMeasurement data(code,title);
 UnitOfMeasurementDAO unitOfMeasurementDAO;
-cout<<"data is going to update"<<endl;
 try
 {
 unitOfMeasurementDAO.update(&data);

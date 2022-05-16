@@ -7,8 +7,11 @@ using namespace inventory;
 using namespace data_layer;
 int main()
 {
-UnitOfMeasurement data(0,"packet");
+string title;
 UnitOfMeasurementDAO m;
+cout<<"Enter Unit: ";
+getline(cin,title);
+UnitOfMeasurement data(0,title);
 try
 {
 m.add(&data);

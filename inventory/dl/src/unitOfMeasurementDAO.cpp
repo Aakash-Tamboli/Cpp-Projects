@@ -77,9 +77,21 @@ unitOfMeasurement->setCode(_unitOfMeasurement.code);
 }
 void UnitOfMeasurementDAO::update(abc::IUnitOfMeasurement *unitOfMeasurement) throw(DAOException)
 {
-int found;
+int found,pos;
 UnitOfMeasurementDAO::Header header;
 UnitOfMeasurementDAO::_UnitOfMeasurement _unitOfMeasurement;
+string vTitle;
+int code;
+char arr[101];
+code=unitOfMeasurement->getCode();
+vTitle=unitOfMeasurement->getTitle();
+vTitle=trimmed(vTitle);
+if(vTitle.length()==0) throw DAOException("title is required");
+if(vTitle.length()>50) throw DAOException("title excced 50 characters");
+if(code<=0)
+{
+throw DAOException("Invalid Code may be you pass negative or zero");
+}
 fstream dataFile(FILE_NAME,ios::in | ios::out | ios::binary);
 if(dataFile.fail())
 {
@@ -101,27 +113,46 @@ throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exis
 found=0;
 while(1)
 {
+pos=dataFile.tellp();
 dataFile.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
 if(dataFile.fail()) break;
-if(_unitOfMeasurement.code==unitOfMeasurement->getCode())
+if(_unitOfMeasurement.code==code)
 {
 found=1;
 break;
 }
 }
-if(found)
+if(found==0)
 {
-if(unitOfMeasurement->getTitle()!=_unitOfMeasurement.title)
+dataFile.close();
+sprintf(arr,"Code does not exist: %d",code);
+throw DAOException(string(arr));
+}
+dataFile.clear();
+dataFile.seekg(sizeof(UnitOfMeasurementDAO::Header),ios::beg);
+dataFile.seekp(sizeof(UnitOfMeasurementDAO::Header),ios::beg);
+while(1)
 {
-dataFile.seekp(sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement)*-1,ios::cur);
-dataFile.write((char *)unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
-cout<<"data file written"<<endl;
+dataFile.read((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+if(dataFile.fail()) break;
+if(compareStringIgnoreCase(_unitOfMeasurement.title,vTitle.c_str())==0 && code!=_unitOfMeasurement.code)
+{
+found=0;
+break;
 }
-dataFile.close();
-return; // no need to update record because code and title is same as in file
 }
+if(found==0)
+{
 dataFile.close();
-throw DAOException(string(unitOfMeasurement->getTitle())+string(", does not exist"));
+throw DAOException(vTitle+string(" ,exist"));
+}
+strcpy(_unitOfMeasurement.title,vTitle.c_str());
+_unitOfMeasurement.code=code;
+dataFile.clear();
+dataFile.seekg(pos,ios::beg);
+dataFile.seekp(pos,ios::beg);
+dataFile.write((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_UnitOfMeasurement));
+dataFile.close();
 }
 void UnitOfMeasurementDAO::remove(int code) throw(DAOException)
 {
