@@ -234,6 +234,8 @@ newDataFile.write((char *)&_unitOfMeasurement,sizeof(UnitOfMeasurementDAO::_Unit
 }
 newDataFile.close();
 tmpRead.close();
+tmpWrite.open("tmp.dat",ios::out | ios::binary);
+tmpWrite.close();
 }
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementDAO::getByCode(int code) throw(DAOException)
@@ -325,6 +327,11 @@ throw DAOException("Unit Of Measurement does not exist.");
 dataFile.seekg(0,ios::beg);
 dataFile.read((char *)&header,sizeof(Header));
 if(dataFile.fail())
+{
+dataFile.close();
+throw DAOException("Unit Of Measurement does not exist.");
+}
+if(header.numberOfRecords==0)
 {
 dataFile.close();
 throw DAOException("Unit Of Measurement does not exist.");
