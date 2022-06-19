@@ -1,10 +1,10 @@
-#ifndef __$__iuom__dl
-#define __$__iuom__dl 124
+#ifndef __$__iuom__bl
+#define __$__iuom__bl 124
 #include<iostream>
 using namespace std;
 namespace inventory
 {
-namespace data_layer
+namespace business_layer
 {
 namespace abc
 {

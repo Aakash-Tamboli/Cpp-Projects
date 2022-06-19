@@ -1,5 +1,5 @@
-#ifndef __$__daoexception__
-#define __$__daoexception__ 1234
+#ifndef __$__daoexception__dl
+#define __$__daoexception__dl 1234
 #include<iostream>
 using namespace std;
 namespace inventory
