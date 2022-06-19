@@ -1,9 +1,9 @@
 #ifndef __$__iuomdao__dl
 #define __$__iuomdao__dl 1234
 #include<iostream>
-#include<iuom>
-#include<uom>
-#include<daoexception>
+#include<dl/iuom>
+#include<dl/uom>
+#include<dl/daoexception>
 #include<forward_list>
 using namespace std;
 namespace inventory

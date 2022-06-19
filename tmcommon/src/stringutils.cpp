@@ -1,4 +1,4 @@
-#include<stringutils>
+#include<common/stringutils>
 #include<iostream>
 using namespace std;
 string stringutils::trimmed(const string &str)

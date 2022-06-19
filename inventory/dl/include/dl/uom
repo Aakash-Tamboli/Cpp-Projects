@@ -1,7 +1,7 @@
 #ifndef __$__uom__dl
 #define __$__uom__dl 1234
 #include<iostream>
-#include<iuom>
+#include<dl/iuom>
 namespace inventory
 {
 namespace data_layer
