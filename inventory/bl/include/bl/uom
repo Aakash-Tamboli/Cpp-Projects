@@ -1,7 +1,7 @@
 #ifndef __$__uom__bl
 #define __$__uom__bl 1234
 #include<iostream>
-#include<iuom>
+#include<bl/iuom>
 namespace inventory
 {
 namespace business_layer

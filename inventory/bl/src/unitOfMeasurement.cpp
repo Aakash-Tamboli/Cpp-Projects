@@ -1,5 +1,5 @@
-#include<iuom>
-#include<uom>
+#include<bl/iuom>
+#include<bl/uom>
 using namespace inventory;
 using namespace business_layer;
 UnitOfMeasurement::UnitOfMeasurement()
