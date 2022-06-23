@@ -18,12 +18,18 @@ bool operator()(string *left,string *right);
 };
 class UnitOfMeasurementManager:public abc::IUnitOfMeasurementManager
 {
+class _UnitOfMeasurement
+{
+public:
+int code;
+string *title;
+};
 private:
 class DataModel
 {
 public:
-map<int,abc::IUnitOfMeasurement *> codeWiseMap;
-map<string *,abc::IUnitOfMeasurement *> titleWiseMap;
+map<int,_UnitOfMeasurement *> codeWiseMap;
+map<string *,_UnitOfMeasurement *> titleWiseMap;
 DataModel();
 ~DataModel();
 void populateDataStructure();

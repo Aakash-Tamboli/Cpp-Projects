@@ -31,9 +31,6 @@ maps
 }
 void UnitOfMeasurementManager::DataModel::populateDataStructure()
 {
-forward_list<inventory::data_layer::abc::IUnitOfMeasurement *> *dlUnitOfMeasurements;
-inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
-dlUnitOfMeasurements=unitOfMeasurementDAO.getAll();
 /*
 1) iterate the dlUnitOfMeasurements forward_list.
 2) On Every iterattion create an object of bl UnitOfMeasurement.
@@ -44,6 +41,15 @@ dlUnitOfMeasurements=unitOfMeasurementDAO.getAll();
 5) free the dlUnitOfMeasurements (inside the iteration loop itself.
 6) after the loop free the object the forward_list object.
 */
+forward_list<inventory::data_layer::abc::IUnitOfMeasurement *> *dlUnitOfMeasurements;
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+dlUnitOfMeasurements=unitOfMeasurementDAO.getAll();
+
+
+
+
+
+
 }
 UnitOfMeasurementManager::UnitOfMeasurementManager()
 {
