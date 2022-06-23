@@ -1,8 +1,8 @@
+#include<common/stringutils>
 #include<bl/iuom>
 #include<bl/uom>
 #include<bl/iuommanager>
 #include<bl/uommanager>
-#include<common/stringutils>
 #include<dl/iuom>
 #include<dl/uom>
 #include<dl/daoexception>
@@ -44,18 +44,85 @@ void UnitOfMeasurementManager::DataModel::populateDataStructure()
 forward_list<inventory::data_layer::abc::IUnitOfMeasurement *> *dlUnitOfMeasurements;
 inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
 dlUnitOfMeasurements=unitOfMeasurementDAO.getAll();
-
-
-
-
-
-
+inventory::data_layer::abc::IUnitOfMeasurement *dlUnitOfMeasurement;
+_UnitOfMeasurement *blUnitOfMeasurement;
+forward_list<inventory::data_layer::abc::IUnitOfMeasurement *>::iterator i;
+int code;
+string *title;
+for(i=dlUnitOfMeasurements->begin();i!=dlUnitOfMeasurements->end();++i)
+{
+dlUnitOfMeasurement=*i;
+code=dlUnitOfMeasurement->getCode();
+title=new string(dlUnitOfMeasurement->getTitle());
+blUnitOfMeasurement=new _UnitOfMeasurement;
+blUnitOfMeasurement->code=code;
+blUnitOfMeasurement->title=title;
+dataModel.codeWiseMap.insert(pair<int,_UnitOfMeasurement *>(code,blUnitOfMeasurement));
+dataModel.titleWiseMap.insert(pair<string *,_UnitOfMeasurement *>(title,blUnitOfMeasurement));
+delete dlUnitOfMeasurement;
+}
+dlUnitOfMeasurements->clear();
+delete dlUnitOfMeasurements;
 }
 UnitOfMeasurementManager::UnitOfMeasurementManager()
 {
 }
 void UnitOfMeasurementManager::addUnitOfMeasurement(abc::IUnitOfMeasurement *unitOfMeasurement) throw(BLException)
 {
+BLException blException;
+if(unitOfMeasurement==NULL)
+{
+blException.setGenericException("Unit of measurement required, NULL Encountered");
+throw blException;
+}
+int code=unitOfMeasurement->getCode();
+string title=unitOfMeasurement->getTitle();
+if(code!=0)
+{
+blException.addPropertyException("code","Code should be zero");
+}
+if(title.length()==0)
+{
+blException.addPropertyException("title","Title required");
+}
+if(title.length()>50)
+{
+blException.addPropertyException("title","length of title should not be more than 50 character");
+}
+if(blException.hasExceptions())
+{
+throw blException;
+}
+map<string *,_UnitOfMeasurement *>::iterator i;
+i=dataModel.titleWiseMap.find(&title);
+if(i!=dataModel.titleWiseMap.end())
+{
+blException.addPropertyException("title","Given tile exists");
+throw blException;
+}
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+try
+{
+inventory::data_layer::abc::IUnitOfMeasurement *dlUnitOfMeasurement;
+dlUnitOfMeasurement=new inventory::data_layer::UnitOfMeasurement;
+dlUnitOfMeasurement->setCode(0);
+dlUnitOfMeasurement->setTitle(title);
+unitOfMeasurementDAO.add(dlUnitOfMeasurement);
+unitOfMeasurement->setCode(dlUnitOfMeasurement->getCode());
+delete dlUnitOfMeasurement;
+string *t=new string(title);
+_UnitOfMeasurement *blUnitOfMeasurement;
+blUnitOfMeasurement=new _UnitOfMeasurement;
+blUnitOfMeasurement->code=code;
+blUnitOfMeasurement->title=t;// may be some problem
+dataModel.codeWiseMap.insert(pair<int,_UnitOfMeasurement *>(code,blUnitOfMeasurement));
+dataModel.titleWiseMap.insert(pair<string *,_UnitOfMeasurement *>(t,blUnitOfMeasurement));
+}catch(inventory::data_layer::DAOException daoException)
+{
+BLException blException;
+blException.setGenericException(string(daoException.what()));
+throw blException;
+}
 }
 void UnitOfMeasurementManager::updateUnitOfMeasurement(abc::IUnitOfMeasurement *unitOfMeasurement) throw(BLException)
 {
