@@ -6,7 +6,7 @@
 #include<dl/iuomdao>
 #include<dl/uomdao>
 #include<fstream>
-#include<stringutils>
+#include<common/stringutils>
 #include<forward_list>
 #include<iostream>
 using namespace inventory;

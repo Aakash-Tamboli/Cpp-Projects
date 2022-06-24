@@ -43,6 +43,8 @@ void UnitOfMeasurementManager::DataModel::populateDataStructure()
 */
 forward_list<inventory::data_layer::abc::IUnitOfMeasurement *> *dlUnitOfMeasurements;
 inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+try
+{
 dlUnitOfMeasurements=unitOfMeasurementDAO.getAll();
 inventory::data_layer::abc::IUnitOfMeasurement *dlUnitOfMeasurement;
 _UnitOfMeasurement *blUnitOfMeasurement;
@@ -63,6 +65,10 @@ delete dlUnitOfMeasurement;
 }
 dlUnitOfMeasurements->clear();
 delete dlUnitOfMeasurements;
+}catch(inventory::data_layer::DAOException &daoException)
+{
+// no need to anything
+}
 }
 UnitOfMeasurementManager::UnitOfMeasurementManager()
 {
