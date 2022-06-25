@@ -147,6 +147,26 @@ abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByTitle(
 }
 forward_list<abc::IUnitOfMeasurement *> * UnitOfMeasurementManager::getUnitOfMeasurements() throw(BLException)
 {
+/*
+Iterate on map (2 of any)
+Create a forward_list of unitOfMeasurement *
+*/
+map<string *,_UnitOfMeasurement *>::iterator i=dataModel.titleWiseMap.begin();
+_UnitOfMeasurement *unitOfMeasurement;
+abc::IUnitOfMeasurement *blUnitOfMeasurement;
+forward_list<abc::IUnitOfMeasurement *> *unitOfMeasurements;
+unitOfMeasurements=new forward_list<abc::IUnitOfMeasurement *>;
+forward_list<abc::IUnitOfMeasurement *>::iterator listi=unitOfMeasurements->before_begin();
+while(i!=dataModel.titleWiseMap.end())
+{
+unitOfMeasurement=i->second;
+blUnitOfMeasurement=new UnitOfMeasurement;
+blUnitOfMeasurement->setCode(unitOfMeasurement->code);
+blUnitOfMeasurement->setTitle(*(unitOfMeasurement->title));
+listi=unitOfMeasurements->insert_after(listi,blUnitOfMeasurement);
+++i;
+}
+return unitOfMeasurements;
 }
 int UnitOfMeasurementManager::unitOfMeasurementCodeExists(int code) throw(BLException)
 {
