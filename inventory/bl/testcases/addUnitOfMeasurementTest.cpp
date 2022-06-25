@@ -9,17 +9,18 @@ int main()
 {
 UnitOfMeasurement uom;
 uom.setCode(0);
-string title("");
+string title;
+cout<<"Enter Unit Of Measurement: ";
+cin>>title;
 uom.setTitle(title);
 UnitOfMeasurementManager manager;
 try
 {
 manager.addUnitOfMeasurement(&uom);
-cout<<"Unit of measurement"<<endl;
+cout<<title<<" is added"<<endl;
 }
 catch(BLException blException)
 {
-cout<<"Some Problem"<<endl;
 if(blException.hasGenericException())
 {
 cout<<blException.getGenericException()<<endl;

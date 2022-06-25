@@ -145,7 +145,7 @@ abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByCode(i
 abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByTitle(string &title) throw(BLException)
 {
 }
-forward_list<abc::IUnitOfMeasurement *> UnitOfMeasurementManager::getUnitOfMeasurements() throw(BLException)
+forward_list<abc::IUnitOfMeasurement *> * UnitOfMeasurementManager::getUnitOfMeasurements() throw(BLException)
 {
 }
 int UnitOfMeasurementManager::unitOfMeasurementCodeExists(int code) throw(BLException)
