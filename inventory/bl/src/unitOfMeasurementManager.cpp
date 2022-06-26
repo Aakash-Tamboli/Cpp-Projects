@@ -170,6 +170,10 @@ return unitOfMeasurements;
 }
 int UnitOfMeasurementManager::unitOfMeasurementCodeExists(int code) throw(BLException)
 {
+map<int,_UnitOfMeasurement *>::iterator i=dataModel.codeWiseMap.begin();
+i=dataModel.codeWiseMap.find(code);
+if(i==dataModel.codeWiseMap.end()) return 0;
+else return 1;
 }
 int UnitOfMeasurementManager::unitOfMeasurementTitleExists(string &title) throw(BLException)
 {
