@@ -141,6 +141,22 @@ void UnitOfMeasurementManager::removeUnitOfMeasurementByTitle(string &title) thr
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByCode(int code) throw(BLException)
 {
+BLException blException;
+abc::IUnitOfMeasurement *blUnitOfMeasurement;
+_UnitOfMeasurement *unitOfMeasurement;
+blUnitOfMeasurement=new UnitOfMeasurement;
+map<int,_UnitOfMeasurement *>::iterator i;
+i=dataModel.codeWiseMap.find(code);
+if(i==dataModel.codeWiseMap.end())
+{
+blException.setGenericException(string("code not exists"));
+blException.addPropertyException("code","Not Exists");
+throw blException;
+}
+unitOfMeasurement=i->second;
+blUnitOfMeasurement->setCode(unitOfMeasurement->code);
+blUnitOfMeasurement->setTitle(*(unitOfMeasurement->title));
+return blUnitOfMeasurement;
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByTitle(string &title) throw(BLException)
 {
