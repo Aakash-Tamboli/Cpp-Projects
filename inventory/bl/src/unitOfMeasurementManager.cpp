@@ -144,6 +144,22 @@ abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByCode(i
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByTitle(string &title) throw(BLException)
 {
+BLException blException;
+abc::IUnitOfMeasurement *blUnitOfMeasurement;
+_UnitOfMeasurement *unitOfMeasurement;
+blUnitOfMeasurement=new UnitOfMeasurement;
+map<string *,_UnitOfMeasurement *,UnitOfMeasurementTitleComparator>::iterator i;
+i=dataModel.titleWiseMap.find(&title);
+if(i==dataModel.titleWiseMap.end())
+{
+blException.setGenericException(string("First add this: ")+string(title));
+blException.addPropertyException("title","Not Exists");
+throw blException;
+}
+unitOfMeasurement=i->second;
+blUnitOfMeasurement->setCode(unitOfMeasurement->code);
+blUnitOfMeasurement->setTitle(*(unitOfMeasurement->title));
+return blUnitOfMeasurement;
 }
 forward_list<abc::IUnitOfMeasurement *> * UnitOfMeasurementManager::getUnitOfMeasurements() throw(BLException)
 {
