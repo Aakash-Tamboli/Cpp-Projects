@@ -29,7 +29,7 @@ class DataModel
 {
 public:
 map<int,_UnitOfMeasurement *> codeWiseMap;
-map<string *,_UnitOfMeasurement *> titleWiseMap;
+map<string *,_UnitOfMeasurement *,UnitOfMeasurementTitleComparator> titleWiseMap;
 DataModel();
 ~DataModel();
 void populateDataStructure();

@@ -120,7 +120,7 @@ string *t=new string(title);
 _UnitOfMeasurement *blUnitOfMeasurement;
 blUnitOfMeasurement=new _UnitOfMeasurement;
 blUnitOfMeasurement->code=code;
-blUnitOfMeasurement->title=t;// may be some problem
+blUnitOfMeasurement->title=t;
 dataModel.codeWiseMap.insert(pair<int,_UnitOfMeasurement *>(code,blUnitOfMeasurement));
 dataModel.titleWiseMap.insert(pair<string *,_UnitOfMeasurement *>(t,blUnitOfMeasurement));
 }catch(inventory::data_layer::DAOException daoException)
@@ -173,6 +173,10 @@ int UnitOfMeasurementManager::unitOfMeasurementCodeExists(int code) throw(BLExce
 }
 int UnitOfMeasurementManager::unitOfMeasurementTitleExists(string &title) throw(BLException)
 {
+map<string *,_UnitOfMeasurement *,UnitOfMeasurementTitleComparator>::iterator i=dataModel.titleWiseMap.begin();
+i=dataModel.titleWiseMap.find(&title);
+if(i==dataModel.titleWiseMap.end()) return 0;
+else return 1;
 }
 int UnitOfMeasurementManager::getUnitOfMeasurementCount() throw(BLException)
 {
