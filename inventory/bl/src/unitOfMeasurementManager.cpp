@@ -176,4 +176,6 @@ int UnitOfMeasurementManager::unitOfMeasurementTitleExists(string &title) throw(
 }
 int UnitOfMeasurementManager::getUnitOfMeasurementCount() throw(BLException)
 {
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+return unitOfMeasurementDAO.getCount();
 }
