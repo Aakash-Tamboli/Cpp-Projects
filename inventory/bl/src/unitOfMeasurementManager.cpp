@@ -99,7 +99,8 @@ if(blException.hasExceptions())
 {
 throw blException;
 }
-map<string *,_UnitOfMeasurement *>::iterator i;
+// above line may be causing error so check
+map<string *,_UnitOfMeasurement *,UnitOfMeasurementTitleComparator>::iterator i;
 i=dataModel.titleWiseMap.find(&title);
 if(i!=dataModel.titleWiseMap.end())
 {
@@ -138,6 +139,23 @@ void UnitOfMeasurementManager::removeUnitOfMeasurementByCode(int code) throw(BLE
 }
 void UnitOfMeasurementManager::removeUnitOfMeasurementByTitle(string &title) throw(BLException)
 {
+BLException blException;
+_UnitOfMeasurement *blUnitOfMeasurement;
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+map<string *,_UnitOfMeasurement *,UnitOfMeasurementTitleComparator>::iterator i;
+i=dataModel.titleWiseMap.find(&title);
+if(i==dataModel.titleWiseMap.end())
+{
+blException.setGenericException("Unit of measurent does not exist");
+blException.addPropertyException("title","title does not exist");
+throw blException;
+}
+blUnitOfMeasurement=i->second;
+unitOfMeasurementDAO.remove(blUnitOfMeasurement->code);
+dataModel.codeWiseMap.erase(blUnitOfMeasurement->code);
+dataModel.titleWiseMap.erase(blUnitOfMeasurement->title);
+delete blUnitOfMeasurement->title;
+delete blUnitOfMeasurement;
 }
 abc::IUnitOfMeasurement * UnitOfMeasurementManager::getUnitOfMeasurementByCode(int code) throw(BLException)
 {
