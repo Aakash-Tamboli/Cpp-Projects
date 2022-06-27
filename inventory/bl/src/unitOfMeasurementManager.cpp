@@ -136,6 +136,23 @@ void UnitOfMeasurementManager::updateUnitOfMeasurement(abc::IUnitOfMeasurement *
 }
 void UnitOfMeasurementManager::removeUnitOfMeasurementByCode(int code) throw(BLException)
 {
+BLException blException;
+_UnitOfMeasurement *blUnitOfMeasurement;
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+map<int,_UnitOfMeasurement *>::iterator i;
+i=dataModel.codeWiseMap.find(code);
+if(i==dataModel.codeWiseMap.end())
+{
+blException.setGenericException("Unit of measurent does not exist");
+blException.addPropertyException("code","code does not exist");
+throw blException;
+}
+blUnitOfMeasurement=i->second;
+unitOfMeasurementDAO.remove(blUnitOfMeasurement->code);
+dataModel.codeWiseMap.erase(blUnitOfMeasurement->code);
+dataModel.titleWiseMap.erase(blUnitOfMeasurement->title);
+delete blUnitOfMeasurement->title;
+delete blUnitOfMeasurement;
 }
 void UnitOfMeasurementManager::removeUnitOfMeasurementByTitle(string &title) throw(BLException)
 {
