@@ -133,6 +133,46 @@ throw blException;
 }
 void UnitOfMeasurementManager::updateUnitOfMeasurement(abc::IUnitOfMeasurement *unitOfMeasurement) throw(BLException)
 {
+BLException blException;
+_UnitOfMeasurement *blUnitOfMeasurement;
+inventory::data_layer::UnitOfMeasurementDAO unitOfMeasurementDAO;
+inventory::data_layer::UnitOfMeasurement *dlUnitOfMeasurement;
+map<int,_UnitOfMeasurement *>::iterator i;
+int code;
+string title;
+code=unitOfMeasurement->getCode();
+title=unitOfMeasurement->getTitle();
+if(code==0)
+{
+blException.addPropertyException("code","Code should not be zero");
+}
+if(title.length()==0)
+{
+blException.addPropertyException("title","Title required");
+}
+if(title.length()>50)
+{
+blException.addPropertyException("title","length of title should not be more than 50 character");
+}
+if(blException.hasExceptions())
+{
+throw blException;
+}
+i=dataModel.codeWiseMap.find(code);
+if(i==dataModel.codeWiseMap.end())
+{
+blException.setGenericException("Unit of measurent does not exist");
+blException.addPropertyException("code","code does not exist");
+throw blException;
+}
+dlUnitOfMeasurement=new inventory::data_layer::UnitOfMeasurement;
+dlUnitOfMeasurement->setCode(code);
+dlUnitOfMeasurement->setTitle(title);
+blUnitOfMeasurement=i->second;
+unitOfMeasurementDAO.update(dlUnitOfMeasurement);
+delete dlUnitOfMeasurement;
+delete blUnitOfMeasurement->title;
+blUnitOfMeasurement->title=new string(title);
 }
 void UnitOfMeasurementManager::removeUnitOfMeasurementByCode(int code) throw(BLException)
 {
