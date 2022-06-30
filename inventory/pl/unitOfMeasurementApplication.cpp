@@ -7,9 +7,11 @@
 #include<limits>
 using namespace std;
 inventory::business_layer::UnitOfMeasurementManager manager;
+char c='-';
 void addUnitOfMeasurements()
 {
 string title;
+int i;
 inventory::business_layer::UnitOfMeasurement uom;
 cout<<"Enter Unit Of Measurement: ";
 cin>>title;
@@ -17,9 +19,25 @@ cin.ignore(numeric_limits<streamsize>::max(),'\n');
 uom.setTitle(title);
 uom.setCode(0);
 manager.addUnitOfMeasurement(&uom);
+cout<<uom.getTitle()<<", "<<uom.getCode()<<" added"<<endl;
+for(i=0;i<50;i++) printf("%c",c);
+printf("\n");
 }
 void showUnitOfMeasurements()
 {
+int e;
+inventory::business_layer::abc::IUnitOfMeasurement *uom;
+forward_list<inventory::business_layer::abc::IUnitOfMeasurement *> *unitOfMeasurements=manager.getUnitOfMeasurements();
+forward_list<inventory::business_layer::abc::IUnitOfMeasurement *>::iterator i;
+for(i=unitOfMeasurements->begin();i!=unitOfMeasurements->end();++i)
+{
+uom=*i;
+cout<<uom->getCode()<<","<<uom->getTitle()<<endl;
+delete uom;
+}
+delete unitOfMeasurements;
+for(e=0;e<50;e++) printf("%c",c);
+printf("\n");
 }
 void updateUnitOfMeasurements()
 {
@@ -54,7 +72,6 @@ cout<<blException.getPropertyException("title")<<endl;
 if(ch==2) showUnitOfMeasurements();
 else if(ch==3) updateUnitOfMeasurements();
 else if(ch==4) removeUnitOfMeasurements();
-
 }
 return 0;
 }
