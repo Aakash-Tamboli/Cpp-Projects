@@ -19,13 +19,13 @@ public:
 int lastGeneratedCode;
 int numberOfRecords;
 };
+public:
 class _UnitOfMeasurement
 {
 public:
 int code;
 char title[51];
 };
-public:
 void add(abc::IUnitOfMeasurement *unitOfMeasurement) throw(DAOException);
 void update(abc::IUnitOfMeasurement *unitOfMeasurement) throw(DAOException);
 void remove(int code) throw(DAOException);

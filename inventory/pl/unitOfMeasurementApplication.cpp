@@ -18,10 +18,25 @@ cin>>title;
 cin.ignore(numeric_limits<streamsize>::max(),'\n');
 uom.setTitle(title);
 uom.setCode(0);
+try
+{
 manager.addUnitOfMeasurement(&uom);
+cout<<"just check after adding"<<endl;
 cout<<uom.getTitle()<<", "<<uom.getCode()<<" added"<<endl;
 for(i=0;i<50;i++) printf("%c",c);
 printf("\n");
+}
+catch(inventory::business_layer::BLException &blException)
+{
+if(blException.hasGenericException())
+{
+cout<<blException.getGenericException()<<endl;
+}
+if(blException.hasPropertyException("title"))
+{
+cout<<blException.getPropertyException("title")<<endl;
+}
+}
 }
 void showUnitOfMeasurements()
 {
@@ -39,6 +54,7 @@ delete unitOfMeasurements;
 for(e=0;e<50;e++) printf("%c",c);
 printf("\n");
 }
+
 void updateUnitOfMeasurements()
 {
 }
@@ -69,7 +85,7 @@ if(blException.hasExceptions())
 cout<<blException.getPropertyException("title")<<endl;
 }
 }
-if(ch==2) showUnitOfMeasurements();
+if(ch==2)  showUnitOfMeasurements();
 else if(ch==3) updateUnitOfMeasurements();
 else if(ch==4) removeUnitOfMeasurements();
 }
