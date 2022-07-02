@@ -8,7 +8,7 @@ SqliteDB sqliteDB;
 try
 {
 sqliteDB.open("some.db");
-sqliteDB.executeInsert("insert into students values(101,'sam','M');");
+sqliteDB.executeUpdate("update students set name='Beena' , gender='F' where roll_number=103;");
 cout<<"SQL statement succefully fire"<<endl;
 }catch(SQLiteException &sqliteException)
 {
