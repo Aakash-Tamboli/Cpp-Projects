@@ -5,8 +5,65 @@
 using namespace std;
 using namespace sqlite;
 using namespace stringutils;
+Rows::Rows() throw (SQLiteException)
+{
+this->dataRows=NULL;
+}
+Rows::Rows(queue<forward_list<string *> *> *dataRows) throw (SQLiteException)
+{
+this->dataRows=dataRows;
+}
+Rows::Rows(const Rows &other) throw (SQLiteException)
+{
+this->dataRows=other.dataRows;
+}
+Rows & Rows::operator=(queue<forward_list<string *> *> *dataRows) throw (SQLiteException)
+{
+this->dataRows=dataRows;
+return *this;
+}
+Rows::~Rows() throw (SQLiteException)
+{
+// code to free the allocated memeory;
+}
+int Rows::hasMoreRows() throw (SQLiteException)
+{
+return !(this->dataRows->empty());
+}
+forward_list<string *> * Rows::getRow() throw (SQLiteException)
+{
+forward_list<string *> *row;
+if(this->dataRows->empty()) return NULL;
+row=this->dataRows->front();
+this->dataRows->pop();
+return row;
+}
 int fetchingData(void *ptr,int columnSize,char **dataPtr,char **columnPtr)
 {
+int e;
+string *str;
+std::queue<std::forward_list<string *> *> *vQueue;
+vQueue=(std::queue<forward_list<string *> *> *)ptr;
+std::forward_list<string *> *list;
+list=new std::forward_list<string *>;
+if(list==NULL)
+{
+// first clear  queue , inside forward list data and forwardlist..
+throw SQLiteException("fetching data is faild because not enough memory");
+}
+forward_list<string *>::iterator i;
+i=list->before_begin();
+for(e=0;e<columnSize;e++)
+{
+str=new string(dataPtr[e]);
+if(str==NULL)
+{
+// first clear  queue , inside forward list data and forwardlist..
+throw SQLiteException("fetching data is faild because not enough memory");
+}
+i=list->insert_after(i,str);
+}
+vQueue->push(list);
 return 0;
 }
 SqliteDB::SqliteDB() throw (SQLiteException)
@@ -154,4 +211,22 @@ return fetchedData;
 }
 queue<forward_list<string *> *> * SqliteDB::selectRows(const string &sql) throw (SQLiteException)
 {
+string error;
+char *errorMessage;
+int resultCode,sqlLength;
+string vsql=trimmed(sql);
+sqlLength=vsql.length();
+if(sqlLength==0 || sqlLength <= 13) throw SQLiteException("Invalid SQL Statement");
+if(this->db==NULL) throw SQLiteException("Unable to fetch data because no connection to database");
+queue<forward_list<string *> *> *fetchedData;
+fetchedData=new queue<forward_list<string *> *>;
+if(fetchedData==NULL) throw SQLiteException("not enough amount of memory for internal use");
+resultCode=sqlite3_exec(this->db,vsql.c_str(),fetchingData,fetchedData,&errorMessage);
+if(resultCode!=SQLITE_OK)
+{
+error=errorMessage;
+sqlite3_free(errorMessage);
+throw SQLiteException("unable to fetch data");
+}
+return fetchedData;
 }
