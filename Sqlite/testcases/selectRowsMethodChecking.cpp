@@ -13,7 +13,7 @@ string *str;
 try
 {
 sqliteDB.open("some.db");
-data=sqliteDB.selectRows("select * from students");
+data=sqliteDB.selectRows("select * from raju");
 while(!data->empty())
 {
 list=data->front();
